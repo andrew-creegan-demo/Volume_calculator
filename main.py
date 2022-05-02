@@ -14,6 +14,8 @@ flow = np.genfromtxt(input_filename)
 # Calculate volume
 flow_filtered = signal.savgol_filter(flow, filter_window_length, filter_order)
 volume = integrate.cumulative_trapezoid(flow_filtered, dx=dx, initial=initial)
+max_volume = volume[np.argmax(volume)]
+print(f"max volume: {max_volume}")
 
 # Plot results
 plt.plot(flow, label="Flow")
