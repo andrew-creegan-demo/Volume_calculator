@@ -1,19 +1,26 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import integrate, signal
+import json
+from tkinter import Tk
+from tkinter.filedialog import askopenfilename
 
-input_filename = "data.csv"
-filter_window_length = 20
-filter_order = 2
-dx = 0.01
-initial = 0
+# Define settings
+config_filename = "conf.json"
+with open(config_filename, "r") as file:
+    conf = json.load(file)
+
+# Select data file
+Tk().withdraw()
+data_filename = askopenfilename(title="Select data file", initialdir=".")
+Tk().destroy()
 
 # Read data
-flow = np.genfromtxt(input_filename)
+flow = np.genfromtxt(data_filename)
 
 # Calculate volume
-flow_filtered = signal.savgol_filter(flow, filter_window_length, filter_order)
-volume = integrate.cumulative_trapezoid(flow_filtered, dx=dx, initial=initial)
+flow_filtered = signal.savgol_filter(flow, conf["filter_window_length"], conf["filter_order"])
+volume = integrate.cumulative_trapezoid(flow_filtered, dx=conf["dx"], initial=conf["initial"])
 
 # Plot results
 plt.plot(flow, label="Flow")
